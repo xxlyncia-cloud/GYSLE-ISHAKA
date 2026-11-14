@@ -6,6 +6,7 @@ module.exports = async (sock, m) => {
 .cekorder - Cek orderan
 .viu - Liat harga Viu
 .netflix - Liat harga Netflix
+.amprem - 
 
 *👥 GRUP*
 .kick @tag - Kick member
