@@ -1,12 +1,18 @@
-module.exports = async (sock, m) => {
+module.exports = async (sock, m, { sender }) => {
   let text = `*🤖 ${global.botName}*
+
+Halo @${sender.split('@')[0]}!
 
 *🛒 JUALAN*
 .beli viu / .beli netflix - Order
 .cekorder - Cek orderan
 .viu - Liat harga Viu
 .netflix - Liat harga Netflix
-.amprem - 
+
+*🎬 ALIGHT MOTION*
+.am - Info Alight Motion
+.am harga - Harga Premium Resmi
+.am tutorial - Tutorial AM pemula
 
 *👥 GRUP*
 .kick @tag - Kick member
@@ -23,5 +29,5 @@ module.exports = async (sock, m) => {
 .tempmail - Bikin email sementara
 .cektoken <token> - Cek OTP tempmail
 `
-  await sock.sendMessage(m.key.remoteJid, { text })
+  await sock.sendMessage(m.key.remoteJid, { text, mentions: [sender] })
 }
