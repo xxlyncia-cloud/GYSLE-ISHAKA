@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const qrcode = require('qrcode-terminal')
 
-global.owner = ['628xxx']
+global.owner = ['6285143014791']
 global.botName = 'GYSLE-ISHAKA'
 global.prefix = '.'
 
