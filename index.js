@@ -37,4 +37,37 @@ async function start() {
   sock.ev.on('group-participants.update', async (anu) => {
     try {
       let welcomeOn = false
-      if (fs.exists
+      if (fs.existsSync('./welcome.json')) welcomeOn = JSON.parse(fs.readFileSync('./welcome.json')).on
+      if (!welcomeOn) return
+      for (let p of anu.participants) {
+        if (anu.action === 'add') await sock.sendMessage(anu.id, { text: `👋 Selamat datang @${p.split('@')[0]} di grup! Ketik .menu`, mentions: [p] })
+        else if (anu.action === 'remove') await sock.sendMessage(anu.id, { text: `👋 Bye @${p.split('@')[0]}`, mentions: [p] })
+      }
+    } catch {}
+  })
+
+  sock.ev.on('messages.upsert', async ({ messages }) => {
+    const m = messages[0]
+    if (!m.message || m.key.fromMe) return
+    const jid = m.key.remoteJid
+    const text = m.message.conversation || m.message.extendedTextMessage?.text || m.message.imageMessage?.caption || ''
+    if (!text.startsWith('.')) return
+    const args = text.slice(1).trim().split(' ')
+    let command = args.shift().toLowerCase()
+    // ALIAS
+    if (command === 'tt') command = 'tiktok'
+    if (command === 'ig') command = 'instagram'
+    if (command === 'insta') command = 'instagram'
+
+    const sender = m.key.participant || m.key.remoteJid
+    const isOwner = global.owner.includes(sender.split('@')[0])
+    const pluginPath = path.join(__dirname, 'plugins', command + '.js')
+    if (!fs.existsSync(pluginPath)) return
+    try {
+      delete require.cache[require.resolve(pluginPath)]
+      const plugin = require(pluginPath)
+      await plugin(sock, m, { args, command, sender, isOwner, body: text })
+    } catch (e) { console.log('Error plugin ' + command, e) }
+  })
+}
+start()
